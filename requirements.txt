@@ -1,0 +1,17 @@
+transformers>=4.40,<5
+datasets>=2.18
+sentence-transformers>=3.0
+spacy>=3.7
+camel-tools>=1.5
+scikit-learn>=1.4
+seqeval>=1.2.2
+faiss-cpu>=1.8
+optimum[onnxruntime]>=1.19
+fastapi>=0.110
+uvicorn>=0.29
+pytest>=8.0
+pandas>=2.0
+matplotlib>=3.8
+numpy<2
+torch>=2.2
+jinja2>=3.1
