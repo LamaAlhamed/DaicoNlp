@@ -69,10 +69,6 @@ Decision:normalize Unicode forms.
 
 Why is the embedding share different? mBERT covers 104 languages so it needs a much larger vocabulary, which inflates its embedding table; CAMeLBERT is Arabic-only with a smaller vocabulary, so the same-sized attention/FFN layers make up a much bigger share of a smaller total.
 
-# Causal mask
-- Applied a lower-triangular mask (torch.tril) so position i attends only to positions ≤ i.
-- Verified: upper triangle of the attention weight matrix is all zeros (torch.allclose check = True).
-- Model family: Decoder-style causal attention (e.g. GPT-style models).
 
 # Attention diagnostics
 - Adjacency head: layer 12 (last), head 8 — avg local attention mass 0.877 (attends mostly to itself + immediate neighbours, n-gram-like behaviour).
