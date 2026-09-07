@@ -56,10 +56,29 @@ Why it matters: Different character forms can create inconsistent text and affec
 
 Decision:normalize Unicode forms.
 
-# Lab 2 — Parameter audit
-Checkpoint	Total params	Embeddings %	Other notes
-mBERT			
-CAMeLBERT		
+## Lab 2 — Parameter audit
+
+| Bucket | mBERT | mBERT % | CAMeLBERT | CAMeLBERT % |
+|---|---:|---:|---:|---:|
+| Total | 177,853,440 | 100% | 109,081,344 | 100% |
+| Embeddings | 92,208,384 | 51.85% | 23,436,288 | 21.49% |
+| Attention | 28,348,416 | 15.94% | 28,348,416 | 25.99% |
+| FFN | 56,669,184 | 31.86% | 56,669,184 | 51.95% |
+| Norms | 36,864 | 0.02% | 36,864 | 0.03% |
+| Pooler | 590,592 | 0.33% | 590,592 | 0.54% |
+
+Why is the embedding share different? mBERT covers 104 languages so it needs a much larger vocabulary, which inflates its embedding table; CAMeLBERT is Arabic-only with a smaller vocabulary, so the same-sized attention/FFN layers make up a much bigger share of a smaller total.
+
+# Causal mask
+- Applied a lower-triangular mask (torch.tril) so position i attends only to positions ≤ i.
+- Verified: upper triangle of the attention weight matrix is all zeros (torch.allclose check = True).
+- Model family: Decoder-style causal attention (e.g. GPT-style models).
+
+# Attention diagnostics
+- Adjacency head: layer 12 (last), head 8 — avg local attention mass 0.877 (attends mostly to itself + immediate neighbours, n-gram-like behaviour).
+- [SEP] sink: average attention mass directed at [SEP] across all layers/heads = 0.129 (~13%), even though [SEP] carries no content — known BERT attention-sink pattern.
+- Pad leakage: with a correct attention_mask, pad attention mass = 0.0000. Without any mask (all-ones), pad mass = 0.1544 — 15.44% of total attention wasted on [PAD] tokens, mostly hurting the shorter English example.
+- Takeaway: always pass attention_mask at inference/training; skipping it silently degrades short sequences the most.
 
 # Lab 4 — Dialect audit
 Distribution:

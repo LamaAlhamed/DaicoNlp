@@ -13,6 +13,14 @@
 - Golden preprocessing: 25 / 25 passed
 - PII masking recall: 60 / 60 = 100%
 
+
+## Lab 2 — Attention diagnostics
+- Pad attention mass WITH mask: 0.0000
+- Pad attention mass WITHOUT mask: 0.1544
+- Most adjacency-looking head: layer 12, head 8 (avg local mass 0.877)
+- Average [SEP] attention mass (all layers/heads): 0.1290
+- Causal mask check: lower-triangular = True
+
 ## Lab 3 — Models
 | Model | Metric | Validation | Frozen test | Train time |
 |---|---|---:|---:|---:|
