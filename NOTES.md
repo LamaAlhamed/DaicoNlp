@@ -6,8 +6,11 @@ For each one record: example, why it matters, and clean/preserve/task-dependent.
 
 # Defect 1
 Class:HTML remnants
+
 Example: FB-000001,ar,  لووووسمحت ألطريق المؤدي إلى حي الياسمين يحتاج صيانة عاجلة 😡 <br> 0551234567 1023456789
+
 Why it matters:HTML tags add unnecessary noise to the text and may affect NLP processing.
+
 Decision: remove HTML tags.
 
 # Defect 2
