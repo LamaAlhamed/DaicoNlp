@@ -24,7 +24,7 @@
 ## Lab 3 — Models
 | Model | Metric | Validation | Frozen test | Train time |
 |---|---|---:|---:|---:|
-| TF-IDF + LinearSVC | macro-F1 | | | |
+| TF-IDF + LinearSVC | macro-F1 | 1.0000 | 1.0000 | 0.25s |
 | Topic classifier | macro-F1 | | | |
 | NER | entity-F1 | | | |
 | QA | span/null smoke | | | |
