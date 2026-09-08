@@ -1,6 +1,8 @@
 """Lab 3B starter: run the 12-question QA smoke set."""
 import json
 import random
+import re
+import string
 from pathlib import Path
 
 import torch
@@ -76,6 +78,19 @@ def build_smoke_set():
     return answerable + impossible
 
 
+def normalize_answer(text: str) -> str:
+    """Standard SQuAD-style normalisation: lowercase, drop punctuation and
+    articles (a/an/the), collapse whitespace. Used ONLY for scoring the
+    smoke set, never inside best_span() itself — the model's raw span
+    ("the Bayan portal") is still logically correct even if it includes a
+    leading article the strict gold string does not.
+    """
+    text = text.lower()
+    text = "".join(ch for ch in text if ch not in string.punctuation)
+    text = re.sub(r"\b(a|an|the)\b", " ", text)
+    return " ".join(text.split())
+
+
 def run_example(model, tokenizer, example, device):
     encoding = tokenizer(
         example["question"],
@@ -132,7 +147,7 @@ def main():
             print(f"[NULL EXPECTED]  Q: {ex['question']!r}  predicted={predicted!r}  correct={hit}")
         else:
             n_answerable += 1
-            hit = predicted is not None and predicted.strip() == (ex["gold_answer"] or "").strip()
+            hit = predicted is not None and normalize_answer(predicted) == normalize_answer(ex["gold_answer"] or "")
             correct_answerable += hit
             print(
                 f"[ANSWERABLE]     Q: {ex['question']!r}  gold={ex['gold_answer']!r}  "
