@@ -1,4 +1,5 @@
-"""Lab 4 starter: per-model Arabic normalisation profiles."""
+import re
+import unicodedata
 from dataclasses import dataclass
 
 
@@ -8,11 +9,30 @@ class ArabicProfile:
     dediacritize: bool = False
 
 
+DISPLAY_PROFILE = ArabicProfile(name="display", dediacritize=False)
+MODEL_PROFILE = ArabicProfile(name="bayan_ar_v1", dediacritize=True)
+
+_TATWEEL = "\u0640"
+_DIACRITICS_RE = re.compile(r"[\u064B-\u0652\u0670]")
+_ALEF_VARIANTS_RE = re.compile(r"[إأآ]")
+_ALEF_MAKSURA = "ى"
+_TA_MARBUTA = "ة"
+_WAW_HAMZA = "ؤ"
+_YEH_HAMZA = "ئ"
+
+
 def normalize_arabic(text: str, profile: ArabicProfile) -> str:
-    # TODO(Lab 4): implement the two course profiles and preserve a separate display copy.
-    raise NotImplementedError
+    text = unicodedata.normalize("NFC", text)
+    text = text.replace(_TATWEEL, "")
+    if profile.dediacritize:
+        text = _DIACRITICS_RE.sub("", text)
+    text = _ALEF_VARIANTS_RE.sub("ا", text)
+    text = text.replace(_ALEF_MAKSURA, "ي")
+    text = text.replace(_TA_MARBUTA, "ه")
+    text = text.replace(_WAW_HAMZA, "و")
+    text = text.replace(_YEH_HAMZA, "ي")
+    return text
 
 
 def segment(text: str) -> list[str]:
-    # TODO(Lab 4): wire the chosen CAMeL Tools clitic segmentation scheme.
     raise NotImplementedError
