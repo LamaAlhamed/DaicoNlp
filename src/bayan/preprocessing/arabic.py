@@ -1,6 +1,9 @@
 import re
 import unicodedata
 from dataclasses import dataclass
+from camel_tools.tokenizers.word import simple_word_tokenize
+from camel_tools.disambig.mle import MLEDisambiguator
+from camel_tools.tokenizers.morphological import MorphologicalTokenizer
 
 
 @dataclass(frozen=True)
@@ -20,6 +23,8 @@ _TA_MARBUTA = "ة"
 _WAW_HAMZA = "ؤ"
 _YEH_HAMZA = "ئ"
 
+_MORPH_TOKENIZER = None
+
 
 def normalize_arabic(text: str, profile: ArabicProfile) -> str:
     text = unicodedata.normalize("NFC", text)
@@ -34,5 +39,18 @@ def normalize_arabic(text: str, profile: ArabicProfile) -> str:
     return text
 
 
+def _get_morph_tokenizer():
+    global _MORPH_TOKENIZER
+    if _MORPH_TOKENIZER is None:
+        disambiguator = MLEDisambiguator.pretrained()
+        _MORPH_TOKENIZER = MorphologicalTokenizer(
+            disambiguator=disambiguator, scheme="d3tok", split=True
+        )
+    return _MORPH_TOKENIZER
+
+
 def segment(text: str) -> list[str]:
-    raise NotImplementedError
+    words = simple_word_tokenize(text)
+    if not words:
+        return []
+    return _get_morph_tokenizer().tokenize(words)
