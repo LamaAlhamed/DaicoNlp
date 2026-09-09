@@ -76,6 +76,7 @@ Why is the embedding share different? mBERT covers 104 languages so it needs a m
 - Pad leakage: with a correct attention_mask, pad attention mass = 0.0000. Without any mask (all-ones), pad mass = 0.1544 — 15.44% of total attention wasted on [PAD] tokens, mostly hurting the shorter English example.
 - Takeaway: always pass attention_mask at inference/training; skipping it silently degrades short sequences the most.
 
-# Lab 4 — Dialect audit
-Distribution:
-One-sentence implication for MSA-only evaluation:
+
+## Lab 4 — Dialect audit
+- Distribution: Gulf = 4800 rows (66.7%), MSA = 2400 rows (33.3%) — out of 7200 Arabic rows total.
+- Implication: two-thirds of real Arabic traffic is Gulf dialect, not MSA — evaluating only on MSA would overstate real-world performance and hide weaknesses on the majority of actual citizen feedback.
